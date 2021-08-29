@@ -1,0 +1,32 @@
+npm install sequelize 
+sequelize init
+set config .env
+
+npx sequelize-cli model:generate --name UserGame --attributes username:string,password:string
+npx sequelize-cli model:generate --name UserBiodata  --attributes fname:string,lname:string,age:integer
+
+// queryInterface add foreign key 
+https://stackoverflow.com/questions/29904939/writing-migrations-with-foreign-keys-using-sequelizejs
+
+//penjelasan alter-table-userGameBio 
+    ada di FD 5 24 Agus 00:40:51
+
+    sequelize migrate:create --name alter
+
+
+https://stackoverflow.com/questions/65380030/association-in-sequelize
+
+db.usergame = require('./models').Usergame(sequelize, Sequelize);
+db.userbiodata = require('./models').Userbiodata(sequelize, Sequelize);
+
+
+table migration name must be use "S" ??
+
+https://towardsdatascience.com/version-control-your-database-part-1-creating-migrations-and-seeding-992d86c90170
+
+db.sequelize.sync({}) --> to see the logging query, go to config-> set logging: true
+
+
+some reference: -> class form sequelize define
+https://gist.github.com/vapurrmaid/a111bf3fc0224751cb2f76532aac2465
+
