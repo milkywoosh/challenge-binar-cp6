@@ -30,3 +30,15 @@ db.sequelize.sync({}) --> to see the logging query, go to config-> set logging: 
 some reference: -> class form sequelize define
 https://gist.github.com/vapurrmaid/a111bf3fc0224751cb2f76532aac2465
 
+
+be carefull saat set db.sync(force: true) --->> 
+---> akan merubah setup MIGRATION
+--> efek, mengubah status FOREIGN KEY menjadi tidak related
+solusi????  -> https://stackoverflow.com/questions/56213758/on-delete-cascade-for-multiple-foreign-keys-with-sequelize
+
+
+ {
+          foreignKey: {name: 'id', allowNull: false},
+          onDelete: 'cascade',
+          hooks: true
+        }

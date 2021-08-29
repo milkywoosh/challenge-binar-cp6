@@ -4,11 +4,6 @@ const cors = require("cors");
 require('dotenv').config();
 const app = express();
 
-var corsOptions = {
-  origin: "http://localhost:8081"
-};
-
-app.use(cors(corsOptions));
 
 // parse requests of content-type - application/json
 app.use(express.json());  /* bodyParser.json() is deprecated */
@@ -18,21 +13,21 @@ app.use(express.urlencoded({ extended: true }));   /* bodyParser.urlencoded() is
 
 
 const db = require("./models/index");
-const {UserGame, UserBiodata} = require('./models')
-// UserGame.sequelize.sync(); // will show activity in database querying 
-
-db.sequelize.sync({force: false}); // if true: overwrite the data every NPM RUN START, false: not overwrite!!
+const NEVER_CHANGE = { force: false };
+db.sequelize.sync(NEVER_CHANGE); // if true: overwrite the data every NPM RUN START, false: not overwrite!!
 
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to test backend usergame." });
 });
 
-const routing = require("./routes/router");
-routing(app);
+const routing_usergame = require("./routes/router_usergame");
+const routing_userbio = require("./routes/router_userbio");
+routing_usergame(app);
+routing_userbio(app);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 3030;
+const PORT = process.env.PORT || 3050;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

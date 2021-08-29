@@ -1,8 +1,5 @@
 module.exports = app => {
     const usergame_con = require('../controllers/usergame_controller');
-    const userbio_con = require('../controllers/userbio_controller');
-    
-
     let router = require("express").Router();
     
 
@@ -19,9 +16,7 @@ module.exports = app => {
     router.delete("/usergames", usergame_con.deleteAll);
 
 
-    // Retrieve all Userbiodata
-    router.get("/userbiodata", userbio_con.findAll_biodata);
-
+   
     app.use("/api/", router);
 
 }

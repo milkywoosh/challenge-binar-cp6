@@ -8,10 +8,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      fullname: {
+      fname: {
         type: Sequelize.STRING
       },
-      biodata: {
+      lname: {
+        type: Sequelize.STRING
+      },
+      age: {
         type: Sequelize.STRING
       },
       createdAt: {

@@ -42,10 +42,11 @@ exports.create =  async (req, res) => {
         return;
     }
 
-    const { fullname, biodata }= req.body;
+    const { fname, lname, age } = req.body;
     const userBiodata = await UserBiodata.create({
-        fullname,
-        biodata,
+        fname,
+        lname,
+        age,
         user_id: user.id
     });
     if (!userBiodata) {
@@ -55,8 +56,6 @@ exports.create =  async (req, res) => {
 
     response.success(res, `Created new user.`);
 }
-
-
 
 
 
@@ -78,8 +77,6 @@ exports.findAll =  (req, res) => {
             });
         });
 };
-
-
 // Find a single Tutorial with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
@@ -100,8 +97,6 @@ exports.findOne = (req, res) => {
             console.log(err);
         });
 };
-
-
 // Delete all Tutorials from the database.
 exports.deleteAll = (req, res) => {
     UserGame.destroy({
