@@ -1,6 +1,11 @@
 const db = require('../models/index');
 const {UserGame, UserBiodata} = require('../models')
 
+const express = require("express");
+const path = require("path");
+const app = express();
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname));
 
 // equalTo greaterThan
 const Op = db.Sequelize.Op;
@@ -18,14 +23,14 @@ exports.join =  (req, res) => {
         }
       })
         .then(users => {
-          // res.render("index", {
-          //   users
-          // });
-          res.send(users);
+          res.render("index", {
+            users
+          });
+        //   res.send(users);
     
         })
         .catch( err => {
-          res.send(err.message);
+          res.send({'errorr: ': err.message});
         })
 }
 
@@ -66,9 +71,11 @@ exports.findAll =  (req, res) => {
     var condition = username ? { username: { [Op.iLike]: `%${username}%` } } : null;
 
      UserGame.findAll({ where: condition })
-        .then(data => {
+   
+        .then(datafindall => {
 
-            res.send(data);
+            res.send(datafindall);
+          
         })
         .catch(err => {
             res.status(500).send({
@@ -79,24 +86,46 @@ exports.findAll =  (req, res) => {
 };
 // Find a single Tutorial with an id
 exports.findOne = (req, res) => {
-    const id = req.params.id;
-    UserGame.findByPk(id)
+    const UserID = req.params.id;
+    UserGame.findByPk(UserID)
         .then(data => {
             if (data) {
                 res.send(data)
                 return;
             }
             res.status(200).send({
-                message: "Error retrieving Tutorial with id=" + id
+                message: "Error retrieving Tutorial with id=" + UserID
             });
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Tutorial with id=" + id
+                message: "Error retrieving Tutorial with id=" + UserID
             });
             console.log(err);
         });
 };
+
+// Delete by ID
+exports.deleteById = (req, res) => {
+        const { userID } = req.body;
+        UserGame.destroy({
+            where: {
+                id: userID
+            }
+        })
+            .then(async success => {
+                if (success) {
+                    response.success(res, `Deleted user with id ${userID}.`);
+                } else {
+                    response.fail(res, `No user with id ${userID}.`);
+                }
+            })
+            .catch(e => {
+                console.log(e)
+                res.send(500)
+            })
+    },
+
 // Delete all Tutorials from the database.
 exports.deleteAll = (req, res) => {
     UserGame.destroy({
@@ -113,3 +142,19 @@ exports.deleteAll = (req, res) => {
             });
         });
 };
+
+// patch
+exports.editUserGame = (req, res) => {
+    const { userID, username, password } = req.body;
+    UserGame.update(
+        { username, password },
+        { where: { id: userID } }
+    )
+        .then(([result]) => {
+            if (result) return response.success(res, `Edited user with id ${userID}.`)
+            else return response.fail(res, `No user with id ${userID}.`)
+        })
+        .catch(err =>
+            response.serverError(res, "something went wrong " + err)
+        )
+}

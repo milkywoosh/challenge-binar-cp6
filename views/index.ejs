@@ -1,0 +1,202 @@
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chapter 6</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+<body>
+    <div id="root"></div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Create New User
+    </button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Create New User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Username:</label>
+                            <input type="text" class="form-control" id="recipient-username" name="username">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-password" class="col-form-label">Password:</label>
+                            <input type="password" class="form-control" id="recipient-password" name="password">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-fname" class="col-form-label">First Name:</label>
+                            <input type="text" class="form-control" id="recipient-fname" name="fname">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-lname" class="col-form-label">First Name::</label>
+                            <input type="text" class="form-control" id="recipient-lname" name="lname">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-age" class="col-form-label">Age:</label>
+                            <input type="text" class="form-control" id="recipient-age" name="age">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="" id="create-user" class="btn btn-primary" name="Create" value="Create" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <% if(users.length> 0){ %>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">ID</th>
+                    <!-- <th scope="col">USERNAME</th>
+                    <th scope="col">PASSWORD</th> -->
+                    <th scope="col">FIRST NAME</th>
+                    <th scope="col">LAST NAME</th>
+                    <th scope="col">AGE</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.map((u, index)=> { %>
+                    <tr>
+                        <th scope="row">
+                            <%= index+1 %>
+                        </th>
+                        <td>
+                            <%= u.id %>
+                        </td>
+                        <td>
+                            <%= u['UserBiodatum.fname'] %>
+                        </td>
+                        <td>
+                            <%= u['UserBiodatum.lname'] %>
+                        </td>
+                        <td>
+                            <%= u['UserBiodatum.age'] %>
+                        </td>
+                        <td>
+                            <div style="display: flex;">
+                                <form>
+                                    <input type="text" name="userID" value="<%= u.id %>" style="display: none;">
+                                    <a href="/usegames/join-table/<%= u.id %>" class="btn btn-warning edit-user" data-userid="<%= u.id %>">Edit</a>
+                                </form>
+                                <form>
+                                    <input type="text" name="userID" value="<%= u.id %>" style="display: none;">
+                                    <input type="" class="btn btn-danger delete-user" data-userid="<%= u.id %>"
+                                        name="Delete" value="Delete" />
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+            </tbody>
+        </table>
+        <% } else{ %>
+            <h1>No Data</h1>
+        <% } %>
+</body>
+<noscript>Javascript gaada euy</noscript>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+
+<!-- AXIOS -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- React.JS -->
+<script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+
+<script>
+    document.getElementById("create-user").addEventListener('click', function (e) {
+        let username = document.getElementById('recipient-username').value
+        let password = document.getElementById('recipient-password').value
+        let fname = document.getElementById('recipient-fname').value
+        let lname = document.getElementById('recipient-lname').value
+        let age = document.getElementById('recipient-age').value
+        axios.post('/usergames/create', {
+            username: username,
+            password: password,
+            fname:fname,
+            lname:lname,
+            age:age
+        })
+            .then(function (response) {
+                console.log(response);
+                window.location.reload()
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    })
+
+    var deleteElements = document.getElementsByClassName("delete-user");
+    var deleteUser = function (e) {
+        let userId = this.dataset.userid
+        if (confirm(`Are you sure you want to delete user ${userId}?`)){
+            axios.delete('/usegames/deleteByid', {
+                data: {
+                    userID: userId
+                }
+            })
+                .then(function (response) {
+                    console.log(response);
+                    window.location.reload()
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    };
+
+    for (var i = 0; i < deleteElements.length; i++) {
+        deleteElements[i].addEventListener('click', deleteUser);
+    }
+
+</script>
+
+<script>
+    'use strict';
+
+    const LikeButton2 = () => {
+        const [liked, setLiked] = React.useState(false)
+        if (liked) {
+            return 'You liked this.';
+        }
+        return React.createElement(
+            'button',
+            { 
+                onClick: () => setLiked(true),
+                style: {color: 'red'},
+                className: "like-functional"
+             },
+            'Like Functional'
+        );
+    }
+    class LikeButton extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = { liked: false };
+        }
+
+        render() {
+            if (this.state.liked) {
+                return 'You liked this.';
+            }
+
+            return React.createElement(
+                'button',
+                { onClick: () => this.setState({ liked: true }) },
+                'Like Class'
+            );
+        }
+    }
+    const domContainer = document.querySelector('#root');
+    ReactDOM.render(React.createElement(LikeButton2), domContainer);
+</script>

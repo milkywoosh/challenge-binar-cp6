@@ -1,6 +1,5 @@
 const express = require("express");
-
-const cors = require("cors");
+const path = require("path");
 require('dotenv').config();
 const app = express();
 
@@ -12,9 +11,14 @@ app.use(express.json());  /* bodyParser.json() is deprecated */
 app.use(express.urlencoded({ extended: true }));   /* bodyParser.urlencoded() is deprecated */
 
 
+// app.set("view engine", "ejs");
+// app.set('views', path.join(__dirname, '/views'));
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname));
+
 const db = require("./models/index");
 const NEVER_CHANGE = { force: false };
-db.sequelize.sync(NEVER_CHANGE); // if true: overwrite the data every NPM RUN START, false: not overwrite!!
+db.sequelize.sync(NEVER_CHANGE); // if true: overwrite the data table every NPM RUN START, false: not overwrite!!
 
 // simple route
 app.get("/", (req, res) => {
