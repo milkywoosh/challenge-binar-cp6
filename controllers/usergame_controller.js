@@ -1,5 +1,5 @@
 const db = require('../models/index');
-const { UserGame, UserBiodata } = require('../models')
+const { UserGame, UserBiodata, UserHistoriGame } = require('../models')
 
 const express = require("express");
 const path = require("path");
@@ -20,6 +20,7 @@ exports.join = (req, res) => {
         ],
         include: {
             model: UserBiodata
+
         }
     })
         .then(users => {
@@ -54,13 +55,43 @@ exports.create = async (req, res) => {
         age,
         user_id: user.id
     });
+
     if (!userBiodata) {
         response.fail(res, `Failed to create new user biodata.`);
         return;
     }
 
+
+
     response.success(res, `Created new user.`);
 }
+
+exports.insertScore = async (req, res) => {
+    const { score, username_id } = req.body
+
+    const userHistoriGame = UserHistoriGame.create({
+        score,
+        username_id
+    })
+    userHistoriGame.then( data => {
+        res.send(200)
+        if (!data.username_id) {
+            res.send({message: "id is not found"})
+        }
+    })
+    .catch(e => {
+        res.send({message: e.message});
+    })
+    // if (!userHistoriGame) {
+    //     response.fail(res, `Failed to create new user biodata.`);
+    //     return;
+    // }
+    // response.success(res, `Created new user.`);
+    
+
+}
+    
+
 
 
 
@@ -179,6 +210,27 @@ exports.editPageDataUser = (req, res) => {
             }
         })
         .catch(e => {
+            res.send(500)
+        })
+}
+
+
+exports.deleteScoreById = (req, res) => {
+    const { userID } = req.body;
+    UserHistoriGame.destroy({
+        where: {
+            id: userID
+        }
+    })
+        .then(async success => {
+            if (success) {
+                response.success(res, `Deleted user with id ${userID}.`);
+            } else {
+                response.fail(res, `No user with id ${userID}.`);
+            }
+        })
+        .catch(e => {
+            console.log(e)
             res.send(500)
         })
 }

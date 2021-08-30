@@ -2,8 +2,12 @@ npm install sequelize
 sequelize init
 set config .env
 
+
++ npx blabla will generate model and migration
 npx sequelize-cli model:generate --name UserGame --attributes username:string,password:string
 npx sequelize-cli model:generate --name UserBiodata  --attributes fname:string,lname:string,age:integer
+npx sequelize-cli model:generate --name UserHistoriGame  --attributes score:integer,usernameID:integer
+
 
 // queryInterface add foreign key 
 https://stackoverflow.com/questions/29904939/writing-migrations-with-foreign-keys-using-sequelizejs
@@ -11,7 +15,7 @@ https://stackoverflow.com/questions/29904939/writing-migrations-with-foreign-key
 //penjelasan alter-table-userGameBio 
     ada di FD 5 24 Agus 00:40:51
 
-    sequelize migrate:create --name alter
+    sequelize migration:create --name altertable-userhistorigame
 
 
 https://stackoverflow.com/questions/65380030/association-in-sequelize
@@ -42,3 +46,46 @@ solusi????  -> https://stackoverflow.com/questions/56213758/on-delete-cascade-fo
           onDelete: 'cascade',
           hooks: true
         }
+
+
+
+INSERT INTO "UserGames" (username, password, createdAt, updatedAt) VALUES ('beni123', 'aaa', '1996-12-02', '2020-01-01' );
+
+INSERT INTO table_name (score, username_player)
+VALUES (100, 'beni123);
+
+
+select UserGames.username,
+    UserHistories.score,
+    UserHistories.usernameID
+from "UserHistories"
+    left join "UserGames"
+on UserGames.id = UserHistories.usernameID;
+
+
+
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class UserHistoriGame extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      UserHistoriGame.belongsTo(models.UserGame, {foreignKey: 'usernameID'})
+    }
+  };
+  UserHistoriGame.init({
+    score: DataTypes.INTEGER,
+    usernameID: DataTypes.INTEGER
+  }, {
+    sequelize,
+    modelName: 'UserHistoriGame',
+  });
+  return UserHistoriGame;
+};

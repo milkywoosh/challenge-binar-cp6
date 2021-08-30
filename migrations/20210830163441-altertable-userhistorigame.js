@@ -5,18 +5,19 @@ module.exports = {
     const transaction = await queryInterface.sequelize.transaction();
     try {
       await queryInterface.addColumn(
-        'UserBiodata',
-        'user_id',
+        'UserHistoriGames',
+        'username_id',
         Sequelize.INTEGER
       );
-      await queryInterface.addConstraint('UserBiodata', {
+      await queryInterface.addConstraint('UserHistoriGames', {
         type: 'foreign key',
-        fields: ['user_id'],
-        name: 'usergame_usergamebiodata_id_fkey',
+        fields: ['username_id'],
+        name: 'custom_unique_constraint_username',
         references: {
           table: 'UserGames',
           field: 'id',
         },
+        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
         transaction
       });
@@ -31,13 +32,13 @@ module.exports = {
     const transaction = await queryInterface.sequelize.transaction();
     try {
       await queryInterface.removeConstraint(
-        'UserBiodata',
-        'usergame_usergamebiodata_username_fkey',
+        'UserHistoriGames',
+        
         { transaction }
       );
       await queryInterface.removeColumn(
-        'UserBiodata',
-        'user_id'
+        'UserHistoriGames',
+        'username_id'
       );
       return transaction.commit();
     } catch (error) {

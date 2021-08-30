@@ -11,6 +11,9 @@
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Create New User
     </button>
+    <button  type="button" class="btn btn-primary" >
+        <a href="/api/userhistori/cek-score" style="color: white;"> Cek User Score</a>
+    </button>
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -40,6 +43,7 @@
                             <label for="recipient-age" class="col-form-label">Age:</label>
                             <input type="text" class="form-control" id="recipient-age" name="age">
                         </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -129,12 +133,14 @@
         let fname = document.getElementById('recipient-fname').value
         let lname = document.getElementById('recipient-lname').value
         let age = document.getElementById('recipient-age').value
+    
         axios.post('/api/usergames/create', {
             username: username,
             password: password,
             fname:fname,
             lname:lname,
-            age:age
+            age:age,
+            // score: score
         })
             .then(function (response) {
                 console.log(response);
