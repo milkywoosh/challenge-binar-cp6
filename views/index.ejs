@@ -6,7 +6,8 @@
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
 <body>
-    <div id="root"></div>
+
+    <div>BIODATA TABLE OF USERS</div>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Create New User
     </button>
@@ -20,7 +21,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="recipient-name" class="col-form-label">Username:</label>
+                            <label for="recipient-username" class="col-form-label">Username:</label>
                             <input type="text" class="form-control" id="recipient-username" name="username">
                         </div>
                         <div class="mb-3">
@@ -32,7 +33,7 @@
                             <input type="text" class="form-control" id="recipient-fname" name="fname">
                         </div>
                         <div class="mb-3">
-                            <label for="recipient-lname" class="col-form-label">First Name::</label>
+                            <label for="recipient-lname" class="col-form-label">Last Name::</label>
                             <input type="text" class="form-control" id="recipient-lname" name="lname">
                         </div>
                         <div class="mb-3">
@@ -49,13 +50,13 @@
         </div>
     </div>
     <% if(users.length> 0){ %>
-        <table class="table">
+        <table class="table table-dark table-striped">
             <thead>
-                <tr>
+                <tr style="font-size: 14px">
                     <th scope="col">#</th>
                     <th scope="col">ID</th>
-                    <!-- <th scope="col">USERNAME</th>
-                    <th scope="col">PASSWORD</th> -->
+                    <th scope="col">USERNAME</th>
+                    <!-- <th scope="col">PASSWORD</th> -->
                     <th scope="col">FIRST NAME</th>
                     <th scope="col">LAST NAME</th>
                     <th scope="col">AGE</th>
@@ -72,6 +73,9 @@
                             <%= u.id %>
                         </td>
                         <td>
+                            <%= u.username %>
+                        </td>
+                        <td>
                             <%= u['UserBiodatum.fname'] %>
                         </td>
                         <td>
@@ -84,12 +88,16 @@
                             <div style="display: flex;">
                                 <form>
                                     <input type="text" name="userID" value="<%= u.id %>" style="display: none;">
-                                    <a href="/usegames/join-table/<%= u.id %>" class="btn btn-warning edit-user" data-userid="<%= u.id %>">Edit</a>
+
+                                    <!-- catatan: /api/ "/" prefix sebelum api dpt menentukan berhasil tdknya rendering --> 
+                                    
+                                    <a href="/api/usergames/edit-user-data/<%= u.id %>" class="btn btn-warning edit-user" data-userid="<%= u.id %>">Edit</a>
                                 </form>
+                                &nbsp;&nbsp;&nbsp; <!-- nice code to create space between BUTTON  -->
                                 <form>
                                     <input type="text" name="userID" value="<%= u.id %>" style="display: none;">
                                     <input type="" class="btn btn-danger delete-user" data-userid="<%= u.id %>"
-                                        name="Delete" value="Delete" />
+                                        name="Delete" value="Delete" style="width: 100px" />
                                 </form>
                             </div>
                         </td>
@@ -114,13 +122,14 @@
 <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
 
 <script>
+    // DONE
     document.getElementById("create-user").addEventListener('click', function (e) {
         let username = document.getElementById('recipient-username').value
         let password = document.getElementById('recipient-password').value
         let fname = document.getElementById('recipient-fname').value
         let lname = document.getElementById('recipient-lname').value
         let age = document.getElementById('recipient-age').value
-        axios.post('/usergames/create', {
+        axios.post('/api/usergames/create', {
             username: username,
             password: password,
             fname:fname,
@@ -140,7 +149,7 @@
     var deleteUser = function (e) {
         let userId = this.dataset.userid
         if (confirm(`Are you sure you want to delete user ${userId}?`)){
-            axios.delete('/usegames/deleteByid', {
+            axios.delete('/api/usergames/deleteByid', {
                 data: {
                     userID: userId
                 }
@@ -161,42 +170,5 @@
 
 </script>
 
-<script>
-    'use strict';
 
-    const LikeButton2 = () => {
-        const [liked, setLiked] = React.useState(false)
-        if (liked) {
-            return 'You liked this.';
-        }
-        return React.createElement(
-            'button',
-            { 
-                onClick: () => setLiked(true),
-                style: {color: 'red'},
-                className: "like-functional"
-             },
-            'Like Functional'
-        );
-    }
-    class LikeButton extends React.Component {
-        constructor(props) {
-            super(props);
-            this.state = { liked: false };
-        }
-
-        render() {
-            if (this.state.liked) {
-                return 'You liked this.';
-            }
-
-            return React.createElement(
-                'button',
-                { onClick: () => this.setState({ liked: true }) },
-                'Like Class'
-            );
-        }
-    }
-    const domContainer = document.querySelector('#root');
-    ReactDOM.render(React.createElement(LikeButton2), domContainer);
-</script>
+   

@@ -1,5 +1,5 @@
 const db = require('../models/index');
-const {UserGame, UserBiodata} = require('../models')
+const { UserGame, UserBiodata } = require('../models')
 
 const express = require("express");
 const path = require("path");
@@ -12,33 +12,33 @@ const Op = db.Sequelize.Op;
 const response = require('../response/index');
 
 // join table 
-exports.join =  (req, res) => {
+exports.join = (req, res) => {
     UserGame.findAll({
         raw: true,
         order: [
-          ['id', 'ASC'],
+            ['id', 'ASC'],
         ],
         include: {
-          model: UserBiodata
+            model: UserBiodata
         }
-      })
+    })
         .then(users => {
-          res.render("index", {
-            users
-          });
-        //   res.send(users);
-    
+            res.render("index", {
+                users
+            });
+            //   res.send(users);
+
         })
-        .catch( err => {
-          res.send({'errorr: ': err.message});
+        .catch(err => {
+            res.send({ 'errorr: ': err.message });
         })
 }
 
 
 // agar user_id dapat inserted harus pakai async await
-exports.create =  async (req, res) => {
+exports.create = async (req, res) => {
     const { username, password } = req.body;
-    const user =  await UserGame.create({
+    const user = await UserGame.create({
         username,
         password
     });
@@ -65,17 +65,17 @@ exports.create =  async (req, res) => {
 
 
 // Retrieve all Tutorials from the database.
-exports.findAll =  (req, res) => {
+exports.findAll = (req, res) => {
     const username = req.query.username;
     // http://localhost:3030/api/usergames?username=tes
     var condition = username ? { username: { [Op.iLike]: `%${username}%` } } : null;
 
-     UserGame.findAll({ where: condition })
-   
+    UserGame.findAll({ where: condition })
+
         .then(datafindall => {
 
             res.send(datafindall);
-          
+
         })
         .catch(err => {
             res.status(500).send({
@@ -107,41 +107,41 @@ exports.findOne = (req, res) => {
 
 // Delete by ID
 exports.deleteById = (req, res) => {
-        const { userID } = req.body;
-        UserGame.destroy({
-            where: {
-                id: userID
+    const { userID } = req.body;
+    UserGame.destroy({
+        where: {
+            id: userID
+        }
+    })
+        .then(async success => {
+            if (success) {
+                response.success(res, `Deleted user with id ${userID}.`);
+            } else {
+                response.fail(res, `No user with id ${userID}.`);
             }
         })
-            .then(async success => {
-                if (success) {
-                    response.success(res, `Deleted user with id ${userID}.`);
-                } else {
-                    response.fail(res, `No user with id ${userID}.`);
-                }
-            })
-            .catch(e => {
-                console.log(e)
-                res.send(500)
-            })
-    },
-
-// Delete all Tutorials from the database.
-exports.deleteAll = (req, res) => {
-    UserGame.destroy({
-        where: {},
-        truncate: false
-    })
-        .then(nums => {
-            res.send({ message: `${nums} Tutorials were deleted successfully!` });
+        .catch(e => {
+            console.log(e)
+            res.send(500)
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while removing all tutorials."
+},
+
+    // Delete all Tutorials from the database.
+    exports.deleteAll = (req, res) => {
+        UserGame.destroy({
+            where: {},
+            truncate: false
+        })
+            .then(nums => {
+                res.send({ message: `${nums} Tutorials were deleted successfully!` });
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message:
+                        err.message || "Some error occurred while removing all tutorials."
+                });
             });
-        });
-};
+    };
 
 // patch
 exports.editUserGame = (req, res) => {
@@ -157,4 +157,28 @@ exports.editUserGame = (req, res) => {
         .catch(err =>
             response.serverError(res, "something went wrong " + err)
         )
+}
+// patch
+exports.editPageDataUser = (req, res) => {
+    const { userID } = req.params;
+    UserGame.findOne({
+        where: {
+            id: userID
+        },
+        raw: true,
+    })
+        .then(user => {
+            if (user) {
+                res.render("detail", {
+                    user
+                });
+            } else {
+                res.render("error", {
+                    message: `No user with id ${userID}.`
+                });
+            }
+        })
+        .catch(e => {
+            res.send(500)
+        })
 }

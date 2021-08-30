@@ -6,7 +6,7 @@
   integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
 <body>
-  <a href="/">Home</a>
+  <a href="/api/usergames/join-table">BACK TO TABLE USER DATA</a>
   <h1>
     user id: <%= user.id %>
       </th>
@@ -35,14 +35,14 @@
     let username = document.getElementById('recipient-username').value
     let password = document.getElementById('recipient-password').value
     let userID = document.getElementById('recipient-userid').value
-    axios.patch('/usergames/editUser', {
+    axios.patch('/api/usergames/editUser', {
         userID: userID,
         username: username,
         password: password
     })
         .then(function (response) {
             console.log(response);
-            window.location.href = '/'
+            window.location.href = '/api/usergames/join-table'
         })
         .catch(function (error) {
             console.log(error);
